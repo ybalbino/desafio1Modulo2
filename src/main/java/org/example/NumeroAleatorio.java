@@ -1,6 +1,5 @@
 package org.example;
 
-import javax.sound.midi.Soundbank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -13,6 +12,7 @@ public class NumeroAleatorio {
 
         List<Integer> acertos = new ArrayList<>();
         List<Integer> erros = new ArrayList<>();
+        List<Integer> numerosProximos = new ArrayList<>();
 
         int totalPontos = 0;
 
@@ -22,7 +22,7 @@ public class NumeroAleatorio {
         int nivel = sc.nextInt();
         int maximoNumeros = 0;
 
-        switch (nivel){
+        switch (nivel) {
             case 1:
                 maximoNumeros = 10;
                 break;
@@ -39,14 +39,28 @@ public class NumeroAleatorio {
 
         }
         int jogadas = 0;
-        while (true){
-            int sorteioNumeros = sort.nextInt(maximoNumeros) + 1;
-            System.out.println("Digite um numero entre 1 e "+ maximoNumeros + ":");
-            int numeroUsuario = sc.nextInt();
 
-            if (numeroUsuario == sorteioNumeros){
+        while (true) {
+            int sorteioNumeros = sort.nextInt(maximoNumeros) + 1;
+            System.out.println("Digite um numero entre 1 e " + maximoNumeros + ":");
+            int numeroUsuario;
+            while (true) {
+                numeroUsuario = sc.nextInt();
+                if (numeroUsuario >= 1 && numeroUsuario <= maximoNumeros) {
+                    break;
+                } else {
+                    System.out.println("Número inválido. Digite um número entre 1 e " + maximoNumeros + ":");
+                }
+            }
+
+            if (numeroUsuario == sorteioNumeros) {
                 System.out.println("Parabéns! Você acertou e ganhou 10 pontos!");
                 acertos.add(sorteioNumeros);
+                totalPontos += 10;
+            } else if (Math.abs(numeroUsuario - sorteioNumeros) == 1) {
+                System.out.println("Você está a apenas um número de distância. Ganhou 5 pontos.");
+                acertos.add(sorteioNumeros);
+                numerosProximos.add(numeroUsuario);
                 totalPontos += 5;
             } else {
                 System.out.println("Que pena você errou. Não ganhou pontos.");
@@ -60,12 +74,21 @@ public class NumeroAleatorio {
             System.out.println("Numeros que você errou: " + erros);
 
             System.out.println("Quer jogar de novo ? (S/N):");
-            String resp = sc.next();
-            if (!resp.equalsIgnoreCase("S")){
-                break;
+            String resp;
+            while (true) {
+                resp = sc.next();
+                if (resp.equalsIgnoreCase("s") || resp.equalsIgnoreCase("n")) {
+                    break;
+                } else {
+                    System.out.println("Valor inválido. Digite 's' para sim ou 'n' para não.");
+                }
             }
 
+            if (resp.equalsIgnoreCase("n")) {
+                break;
+            }
         }
+
         System.out.println("Fim do Jogo!");
         System.out.println("Total de Jogadas: " + jogadas);
         System.out.println("Pontuação Final: " + totalPontos);
